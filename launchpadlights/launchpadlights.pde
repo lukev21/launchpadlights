@@ -1,5 +1,7 @@
 import arb.soundcipher.*;
 import themidibus.*;
+
+//Declarations
 SCScore score;
 String savelocation;
 ArrayList<byte[][]> timeline;
@@ -9,6 +11,7 @@ PImage arrow;
 PImage arrowalt;
 PImage down;
 MidiBus launchpad;
+
 byte[][] lookup = 
 {
   {
@@ -46,7 +49,9 @@ byte[][] lookup =
   {
     112, 113, 114, 115, 116, 117, 118, 119, 120
   }
-};
+};//Probably should have done the math here, oh well
+
+//First time inits
 void setup()
 {
   MidiBus.list();
@@ -72,6 +77,7 @@ void draw()
   drawLaunchpad();
 }
 
+//Draws the launchpad and interface buttons
 void drawLaunchpad()
 {
   image(logo, 406, 6, 38, 38);
@@ -107,6 +113,7 @@ void drawLaunchpad()
   }
 }
 
+//Returns the color that corresponds to any midi velocity
 color getColor(byte b)
 {
   color c;
@@ -152,6 +159,7 @@ color getColor(byte b)
   return(c);
 }
 
+//Handles mouse click actions (any button)
 void mouseClicked()
 {
   if(mouseButton == LEFT)
@@ -180,7 +188,7 @@ void mouseClicked()
       }
       allOn();
     }
-    else if (mouseY > 450 && mouseY < 500 && mouseX > 150 && mouseX < 200)
+    else if (mouseY > 450 && mouseY < 500 && mouseX > 150 && mouseX < 200)//Copy current
     {
       copyToNext();
     }
@@ -198,6 +206,7 @@ void mouseClicked()
   }
 }
 
+//Handles keyboard input
 void keyPressed()
 {
   if(key == CODED)
@@ -219,8 +228,10 @@ void keyPressed()
       moveDown();
     }
   }
+  else if(key == DELETE || key == 
 }
 
+//Moves a square on the launchpad to the next color
 void toggleSquare(int x, int y)
 {
   launchpad.sendNoteOff(0, lookup[y][x], timeline.get(index)[x][y]);
@@ -266,6 +277,7 @@ void toggleSquare(int x, int y)
   launchpad.sendNoteOn(0, lookup[y][x], timeline.get(index)[x][y]);
 }
 
+//Writes the lightshow to a midi file
 void writeScore()
 {
   for (int i = 0; i < timeline.size(); i++)
@@ -278,8 +290,8 @@ void writeScore()
         {
           if(!(timeline.get(i)[x][y] == 12 || timeline.get(i)[x][y] == 0))
           {
-            //score.addNote(.25 * i, lookup[y][x], timeline.get(i)[x][y], .25);
-            score.addNote(.25 * i, (8-y) * 12 + x, timeline.get(i)[x][y], .25);
+            score.addNote(.25 * i, lookup[y][x], timeline.get(i)[x][y], .25);//Regular Mode
+            //score.addNote(.25 * i, (8-y) * 12 + x, timeline.get(i)[x][y], .25);//FL Mode, not fully implemented
           }
         }
       }
@@ -295,12 +307,14 @@ void writeScore()
   }
 }
 
+//Called to save file
 void saveLocation(File selection)
 {
   savelocation = selection.getAbsolutePath();
   writeScore();
 }
 
+//reads midi input, toggles squares pressed on launchpad
 void noteOn(int channel, int pitch, int velocity) 
 {
   for (int y = 0; y < lookup.length; y++)
@@ -316,6 +330,7 @@ void noteOn(int channel, int pitch, int velocity)
   }
 }
 
+//turns all lights off, timeline remains the same
 void allOff()
 {
   for(int y = 1; y < lookup.length; y++)
@@ -327,6 +342,7 @@ void allOff()
   }
 }
 
+//turns all lights on, timeline remains the same
 void allOn()
 {
   for (int x = 0; x < timeline.get(index).length; x++)
@@ -355,6 +371,7 @@ void copyToNext()
   allOn();
 }
 
+//shifts the grid right
 void moveRight()
 {
   allOff();
@@ -366,6 +383,7 @@ void moveRight()
   allOn();
 }
 
+//shifts the grid left
 void moveLeft()
 {
   allOff();
@@ -377,6 +395,7 @@ void moveLeft()
   allOn();
 }
 
+//shifts the grid up
 void moveUp()
 {
   allOff();
@@ -394,6 +413,7 @@ void moveUp()
   allOn();
 }
 
+//shifts the grid down
 void moveDown()
 {
   allOff();
@@ -411,6 +431,7 @@ void moveDown()
   allOn();
 }
 
+//checks if a layer is empty (do I really need this?)
 boolean isEmpty(byte[][] arr)
 {
   for(int x = 0; x < arr.length; x++)
