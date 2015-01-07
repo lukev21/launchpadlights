@@ -228,7 +228,6 @@ void keyPressed()
       moveDown();
     }
   }
-  else if(key == DELETE || key == 
 }
 
 //Moves a square on the launchpad to the next color
